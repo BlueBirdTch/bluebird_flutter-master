@@ -3,7 +3,7 @@ workflows:
     name: Android Build
     instance_type: mac_mini_m1
     environment:
-      flutter: 3.3.0  # This version includes Dart 2.18.0
+      flutter: 3.3.0
       java: 11
       xcode: latest
     cache:
@@ -20,14 +20,23 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Clear build directory
+      - name: Flutter doctor
         script: |
-          flutter clean
-      - name: Build debug APK
+          flutter doctor -v
+      - name: Check Firebase setup
         script: |
-          cd "$CM_BUILD_DIR" && flutter build apk --debug
-      - name: Display build results
+          echo "Checking for google-services.json"
+          if [ -f "$CM_BUILD_DIR/android/app/google-services.json" ]; then
+            echo "Found google-services.json"
+          else
+            echo "Missing google-services.json, creating placeholder"
+            echo '{"project_info":{"project_number":"000000000000","project_id":"placeholder-id"}}' > "$CM_BUILD_DIR/android/app/google-services.json"
+          fi
+      - name: Debug Gradle
         script: |
-          ls -la build/app/outputs/flutter-apk/ || true
+          cd "$CM_BUILD_DIR/android" && ./gradlew tasks --stacktrace
+      - name: Build debug APK with verbose and detailed logging
+        script: |
+          cd "$CM_BUILD_DIR" && flutter build apk --debug --verbose
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
