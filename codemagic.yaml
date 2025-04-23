@@ -11,32 +11,36 @@ workflows:
         - ~/.gradle/caches
         - ~/.pub-cache
     scripts:
-      - name: Set up local.properties
+      - name: Explore project structure
         script: |
-          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
-      - name: Disable analytics
+          echo "Project structure:"
+          ls -la "$CM_BUILD_DIR"
+          echo "Android directory structure:"
+          ls -la "$CM_BUILD_DIR/android" || echo "Android directory not found"
+          echo "App directory structure:"
+          ls -la "$CM_BUILD_DIR/android/app" || echo "App directory not found"
+      - name: Check for Firebase configuration
         script: |
-          flutter config --no-analytics
-      - name: Get Flutter packages
-        script: |
-          flutter pub get
-      - name: Flutter doctor
-        script: |
-          flutter doctor -v
-      - name: Check Firebase setup
-        script: |
-          echo "Checking for google-services.json"
           if [ -f "$CM_BUILD_DIR/android/app/google-services.json" ]; then
             echo "Found google-services.json"
           else
             echo "Missing google-services.json, creating placeholder"
             echo '{"project_info":{"project_number":"000000000000","project_id":"placeholder-id"}}' > "$CM_BUILD_DIR/android/app/google-services.json"
           fi
-      - name: Debug Gradle
+      - name: Set up local.properties
         script: |
-          cd "$CM_BUILD_DIR/android" && ./gradlew tasks --stacktrace
-      - name: Build debug APK with verbose and detailed logging
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Disable analytics
         script: |
-          cd "$CM_BUILD_DIR" && flutter build apk --debug --verbose
+          flutter config --no-analytics
+      - name: Flutter doctor
+        script: |
+          flutter doctor -v
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Try simplified build
+        script: |
+          cd "$CM_BUILD_DIR" && flutter build apk --debug --target-platform android-arm64
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
