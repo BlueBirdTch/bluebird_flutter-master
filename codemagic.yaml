@@ -17,8 +17,11 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Build debug APK
+      - name: Flutter analyze
         script: |
-          flutter build apk --debug
+          flutter analyze || true
+      - name: Build debug APK with verbose logging
+        script: |
+          flutter build apk --debug --verbose
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
