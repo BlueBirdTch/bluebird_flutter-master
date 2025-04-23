@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1059222334710",
+    "firebase_url": "https://bluebirdtest-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "bluebirdtest",
+    "storage_bucket": "bluebirdtest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1059222334710:android:e1fb6de8f33ea33e4a90d7",
+        "android_client_info": {
+          "package_name": "com.ride.bluebird"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1059222334710-5h27go9unpccoqbbm6jia8d6g52u113f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ride.bluebird",
+            "certificate_hash": "dbbc362c2d17c5bae16f79ad82a27649bf3c8748"
+          }
+        },
+        {
+          "client_id": "1059222334710-brepvt8o6lv0cghl3d74o7qn1rai1bqr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzeYhZ0JiSxTsDtPGXXbbVH71Rv1pm_O4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1059222334710-brepvt8o6lv0cghl3d74o7qn1rai1bqr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1059222334710-977i0bhk2sdudqb0ftatc9dnikaoq8fk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "no"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
