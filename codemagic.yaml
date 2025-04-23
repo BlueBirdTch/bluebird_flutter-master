@@ -3,7 +3,7 @@ workflows:
     name: Android Build
     instance_type: mac_mini_m1
     environment:
-      flutter: 2.10.5  # Older version, more compatible with 2022 codebase
+      flutter: 3.0.5  # This version includes Dart 2.17.x
       java: 11
       xcode: latest
     cache:
