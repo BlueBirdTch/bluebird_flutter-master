@@ -64,7 +64,7 @@ dependencies:
   flutter_markdown: ^0.6.10+3
   firebase_database: ^10.0.9
   paytm_allinonesdk: ^1.2.1
-  http: ^0.13.6
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

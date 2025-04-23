@@ -3,7 +3,7 @@ workflows:
     name: Android Build
     instance_type: mac_mini_m1
     environment:
-      flutter: 3.7.0
+      flutter: 2.10.5  # Older version, more compatible with 2022 codebase
       java: 11
       xcode: latest
     cache:
@@ -19,12 +19,15 @@ workflows:
           flutter config --no-analytics
       - name: Get Flutter packages
         script: |
-          flutter pub get
+          flutter pub get --no-pub-get-errors
       - name: Clear build directory
         script: |
           flutter clean
-      - name: Build APK with specific options
+      - name: Build debug APK
         script: |
-          flutter build apk --debug --split-per-abi
+          cd "$CM_BUILD_DIR" && flutter build apk --debug --no-shrink
+      - name: Display build results
+        script: |
+          ls -la build/app/outputs/flutter-apk/
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
