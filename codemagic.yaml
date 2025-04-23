@@ -19,15 +19,15 @@ workflows:
           flutter config --no-analytics
       - name: Get Flutter packages
         script: |
-          flutter pub get --no-pub-get-errors
+          flutter pub get
       - name: Clear build directory
         script: |
           flutter clean
       - name: Build debug APK
         script: |
-          cd "$CM_BUILD_DIR" && flutter build apk --debug --no-shrink
+          cd "$CM_BUILD_DIR" && flutter build apk --debug
       - name: Display build results
         script: |
-          ls -la build/app/outputs/flutter-apk/
+          ls -la build/app/outputs/flutter-apk/ || true
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
