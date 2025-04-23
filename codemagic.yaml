@@ -3,7 +3,7 @@ workflows:
     name: Android Build
     instance_type: mac_mini_m1
     environment:
-      flutter: 3.3.0
+      flutter: 2.8.0  # Older version from early 2022
       java: 11
       xcode: latest
     cache:
@@ -16,9 +16,15 @@ workflows:
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
       - name: Create placeholder Firebase config
         script: |
-          echo '{"project_info":{"project_number":"000000000000","project_id":"placeholder-id"}}' > "$CM_BUILD_DIR/android/app/google-services.json"
+          echo '{"project_info":{"project_number":"000000000000","project_id":"placeholder-id","firebase_url":"https://placeholder-id.firebaseio.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:000000000000:android:0000000000000000","android_client_info":{"package_name":"com.ride.bluebird"}},"api_key":[{"current_key":"placeholder-key"}]}]}' > "$CM_BUILD_DIR/android/app/google-services.json"
       - name: Get Flutter packages
         script: |
+          flutter pub get
+      - name: Update pubspec.yaml for compatibility
+        script: |
+          sed -i '' 's/>=2.17.0 <4.0.0/>=2.12.0 <3.0.0/' "$CM_BUILD_DIR/pubspec.yaml"
+          sed -i '' 's/^  http: \^0.13.6/  http: ^0.13.4/' "$CM_BUILD_DIR/pubspec.yaml"
+          sed -i '' 's/^  lottie: \^2.0.0/  lottie: ^1.2.2/' "$CM_BUILD_DIR/pubspec.yaml"
           flutter pub get
       - name: Build debug APK
         script: |
