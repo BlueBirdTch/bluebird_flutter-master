@@ -14,14 +14,17 @@ workflows:
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Disable analytics
+        script: |
+          flutter config --no-analytics
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Flutter analyze
+      - name: Clear build directory
         script: |
-          flutter analyze || true
-      - name: Build debug APK with verbose logging
+          flutter clean
+      - name: Build APK with specific options
         script: |
-          flutter build apk --debug --verbose
+          flutter build apk --debug --split-per-abi
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
