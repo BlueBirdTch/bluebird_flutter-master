@@ -11,35 +11,16 @@ workflows:
         - ~/.gradle/caches
         - ~/.pub-cache
     scripts:
-      - name: Explore project structure
-        script: |
-          echo "Project structure:"
-          ls -la "$CM_BUILD_DIR"
-          echo "Android directory structure:"
-          ls -la "$CM_BUILD_DIR/android" || echo "Android directory not found"
-          echo "App directory structure:"
-          ls -la "$CM_BUILD_DIR/android/app" || echo "App directory not found"
-      - name: Check for Firebase configuration
-        script: |
-          if [ -f "$CM_BUILD_DIR/android/app/google-services.json" ]; then
-            echo "Found google-services.json"
-          else
-            echo "Missing google-services.json, creating placeholder"
-            echo '{"project_info":{"project_number":"000000000000","project_id":"placeholder-id"}}' > "$CM_BUILD_DIR/android/app/google-services.json"
-          fi
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
-      - name: Disable analytics
+      - name: Create placeholder Firebase config
         script: |
-          flutter config --no-analytics
-      - name: Flutter doctor
-        script: |
-          flutter doctor -v
+          echo '{"project_info":{"project_number":"000000000000","project_id":"placeholder-id"}}' > "$CM_BUILD_DIR/android/app/google-services.json"
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Try simplified build
+      - name: Build debug APK
         script: |
           cd "$CM_BUILD_DIR" && flutter build apk --debug --target-platform android-arm64
     artifacts:
