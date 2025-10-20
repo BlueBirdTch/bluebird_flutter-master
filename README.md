@@ -58,6 +58,38 @@ After the script finishes, you will find the artifact at
 builds). Upload this file to Firebase App Distribution or sideload it on a test
 device.
 
+### Build and push to Firebase in one command
+
+If you would like the script to build the APK *and* ship it to Firebase App
+Distribution (including sending tester invites), use
+`tool/build_and_distribute.sh`. Before running it, install the
+[Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli),
+log in with `firebase login`, and note the Firebase Android app ID from the
+console (it looks like `1:1234567890:android:abc123`).
+
+Run the script from the repository root:
+
+```bash
+./tool/build_and_distribute.sh \
+  --app <firebase-android-app-id> \
+  --testers "skannepa2206@gmail.com,bluebirdsriram@gmail.com" \
+  --release-notes "Smoke test build"
+```
+
+Key flags:
+
+- `--release` builds a release APK instead of the default debug build.
+- `--groups` lets you target Firebase tester groups in addition to, or instead
+  of, individual e-mail addresses.
+- `--apk` skips the build step and distributes an existing APK file.
+- `--dry-run` prints the Firebase CLI command without executing it—useful for
+  validation before a real upload.
+
+The script invokes `tool/build_test_apk.sh` under the hood (unless you pass
+`--apk`), then runs `firebase appdistribution:distribute` with the options you
+specified. It prints the exact Firebase CLI command before executing it so you
+can see what will happen.
+
 ### Install directly on your phone
 
 1. Enable **Developer options** and **USB debugging** on your Android device.
