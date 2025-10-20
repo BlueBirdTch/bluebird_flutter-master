@@ -43,6 +43,11 @@ manual steps discussed in the project docs. The script will:
 Run it from the repository root:
 
 ```bash
+./tool/build_test_apk.sh                 # debug build (default)
+./tool/build_test_apk.sh --release       # release build
+./tool/build_test_apk.sh --offline       # reuse cached packages
+./tool/build_test_apk.sh --install       # build + install on the first adb device
+./tool/build_test_apk.sh --device <id>   # build + install on a specific adb device
 ./tool/build_test_apk.sh            # debug build (default)
 ./tool/build_test_apk.sh --release  # release build
 ./tool/build_test_apk.sh --offline  # reuse cached packages
@@ -52,6 +57,19 @@ After the script finishes, you will find the artifact at
 `build/app/outputs/flutter-apk/app-debug.apk` (or `app-release.apk` for release
 builds). Upload this file to Firebase App Distribution or sideload it on a test
 device.
+
+### Install directly on your phone
+
+1. Enable **Developer options** and **USB debugging** on your Android device.
+2. Connect the device to your computer and verify it is visible to the Android
+   SDK with `adb devices`.
+3. Run `./tool/build_test_apk.sh --install` to build the debug APK and push it
+   to the connected device automatically. If multiple devices are connected,
+   pass `--device <serial>` to pick the target shown by `adb devices`.
+4. Unlock the phone and confirm the installation prompt if required.
+
+You can still take the generated APK and upload it to Firebase App Distribution
+for remote testers.
 
 ## Manual build (optional)
 

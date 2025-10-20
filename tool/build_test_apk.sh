@@ -7,6 +7,8 @@ set -euo pipefail
 MODE="debug"
 RUN_DOCTOR=1
 OFFLINE=0
+INSTALL=0
+ADB_DEVICE=""
 
 usage() {
   cat <<USAGE
@@ -15,6 +17,8 @@ Usage: $0 [options]
   --release          Build a release APK.
   --offline          Pass --offline to flutter commands.
   --no-doctor        Skip running flutter doctor at the start.
+  --install          Install the resulting APK on a connected device using adb.
+  --device <id>      Target a specific adb device (implies --install).
   -h, --help         Show this message.
 
 The script must be run from within the Flutter project root where pubspec.yaml
@@ -49,6 +53,15 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-doctor)
       RUN_DOCTOR=0
+      ;;
+    --install)
+      INSTALL=1
+      ;;
+    --device)
+      [[ $# -gt 1 ]] || die "--device requires an argument"
+      ADB_DEVICE="$2"
+      INSTALL=1
+      shift
       ;;
     -h|--help)
       usage
@@ -138,3 +151,40 @@ fi
 
 log "APK ready: $PROJECT_ROOT/$APK_PATH"
 log "Upload this file to Firebase App Distribution or sideload it on a device for testing."
+
+install_apk() {
+  command -v adb >/dev/null 2>&1 || die "adb not found in PATH. Install Android platform-tools or skip --install."
+
+  mapfile -t CONNECTED < <(adb devices | awk 'NR>1 && $2 == "device" {print $1}')
+
+  local target=""
+  if [[ -n "$ADB_DEVICE" ]]; then
+    if printf '%s\n' "${CONNECTED[@]}" | grep -Fxq "$ADB_DEVICE"; then
+      target="$ADB_DEVICE"
+    else
+      die "Device '$ADB_DEVICE' is not connected. Run 'adb devices' to verify IDs."
+    fi
+  else
+    if [[ ${#CONNECTED[@]} -eq 0 ]]; then
+      die "No connected adb devices detected. Connect a device or specify --device <id>."
+    elif [[ ${#CONNECTED[@]} -gt 1 ]]; then
+      warn "Multiple adb devices detected: ${CONNECTED[*]}. Using ${CONNECTED[0]}. Pass --device <id> to pick another."
+    fi
+    target="${CONNECTED[0]}"
+  fi
+
+  local adb_args=()
+  if [[ -n "$target" ]]; then
+    adb_args=(-s "$target")
+  fi
+
+  log "Installing APK via adb (device: ${target:-default})"
+  if ! adb "${adb_args[@]}" install -r "$APK_PATH"; then
+    die "adb install failed. Check the device connection or sideload the APK manually."
+  fi
+  log "Install complete. Check your device for the Bluebird build."
+}
+
+if [[ $INSTALL -eq 1 ]]; then
+  install_apk
+fi
