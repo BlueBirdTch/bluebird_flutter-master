@@ -48,6 +48,9 @@ Run it from the repository root:
 ./tool/build_test_apk.sh --offline       # reuse cached packages
 ./tool/build_test_apk.sh --install       # build + install on the first adb device
 ./tool/build_test_apk.sh --device <id>   # build + install on a specific adb device
+./tool/build_test_apk.sh            # debug build (default)
+./tool/build_test_apk.sh --release  # release build
+./tool/build_test_apk.sh --offline  # reuse cached packages
 ```
 
 After the script finishes, you will find the artifact at
